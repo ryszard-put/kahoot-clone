@@ -9,5 +9,8 @@
   "private": false,
   "dependencies": {
     "websocket": "^1.0.34"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
