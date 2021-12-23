@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "websocket": "^1.0.34"
+    "websocket": "^1.0.34",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
