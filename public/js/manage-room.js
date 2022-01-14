@@ -1,7 +1,7 @@
 const fileInput = document.querySelector('#file_input');
 try {
   const wsConnection = new WebSocket(
-    `ws://${location.host}/socket?type=manage-room`
+    `wss://${location.host}/socket?type=manage-room`
   );
 
   wsConnection.addEventListener('open', function (event) {

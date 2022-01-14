@@ -77,60 +77,15 @@ function generateAcceptValue(key) {
     );
   });
 
-  app.get('/socket', (req, res) => {
-    /**
-     * Main socket endpoint responsible for handling http upgrade requests
-     * It accepts query parameter `type` which represents user connection type ("manager" | "player")
-     *
-     */
-
-    if (req.headers['upgrade'] !== 'websocket')
-      return res.socket.send('HTTP/1.1 400 Bad Request');
-
-    const key = req.headers['sec-websocket-key'];
-    const acceptKey = generateAcceptValue(key);
-    console.log(key);
-    const responseHeaders = [
-      'HTTP/1.1 101 Switching Protocols',
-      'Upgrade: websocket',
-      'Connection: Upgrade',
-      `Sec-WebSocket-Accept: ${acceptKey}`,
-      `Sec-WebSocket-Extensions: ${req.headers['sec-websocket-extensions']}`,
-    ];
-
-    res.socket.on('connect', () => {
-      console.log('Client connected');
-    });
-    res.socket
-      .on('close', (hadError) => {
-        if (hadError) console.log('Connection closed with error');
-        else console.log('Connection closed');
-      })
-      .on('error', (err) => {
-        console.log(`Connection error: ${err}`);
-      })
-      .on('data', (data) => {
-        console.log(data);
-      })
-      .on('drain', () => {
-        console.log('Connection drain event');
-      });
-
-    res.socket.write(responseHeaders.concat('\r\n').join('\r\n'));
-  });
-
-  app.all('*', (_req, res) => res.status(404).json({ error: 'invalid-path' }));
-
-  // httpServer.on('upgrade', (req, socket, head) => {
-  //   console.log(req.headers);
-  //   socket.on('error', () => {
-  //     console.log('error');
-  //   });
-  //   // const res = new http.ServerResponse(req);
-  //   // res.assignSocket(socket);
+  // app.get('/socket', (req, res) => {
+  //   /**
+  //    * Main socket endpoint responsible for handling http upgrade requests
+  //    * It accepts query parameter `type` which represents user connection type ("manager" | "player")
+  //    *
+  //    */
 
   //   if (req.headers['upgrade'] !== 'websocket')
-  //     return socket.end('HTTP/1.1 400 Bad Request');
+  //     return res.socket.send('HTTP/1.1 400 Bad Request');
 
   //   const key = req.headers['sec-websocket-key'];
   //   const acceptKey = generateAcceptValue(key);
@@ -143,10 +98,10 @@ function generateAcceptValue(key) {
   //     `Sec-WebSocket-Extensions: ${req.headers['sec-websocket-extensions']}`,
   //   ];
 
-  //   socket.on('connect', () => {
+  //   res.socket.on('connect', () => {
   //     console.log('Client connected');
   //   });
-  //   socket
+  //   res.socket
   //     .on('close', (hadError) => {
   //       if (hadError) console.log('Connection closed with error');
   //       else console.log('Connection closed');
@@ -160,8 +115,53 @@ function generateAcceptValue(key) {
   //     .on('drain', () => {
   //       console.log('Connection drain event');
   //     });
-  //   socket.write(responseHeaders.concat('\r\n').join('\r\n'));
+
+  //   res.socket.write(responseHeaders.concat('\r\n').join('\r\n'));
   // });
+
+  app.all('*', (_req, res) => res.status(404).json({ error: 'invalid-path' }));
+
+  httpServer.on('upgrade', (req, socket, head) => {
+    console.log(req.headers);
+    socket.on('error', () => {
+      console.log('error');
+    });
+    // const res = new http.ServerResponse(req);
+    // res.assignSocket(socket);
+
+    if (req.headers['upgrade'] !== 'websocket')
+      return socket.end('HTTP/1.1 400 Bad Request');
+
+    const key = req.headers['sec-websocket-key'];
+    const acceptKey = generateAcceptValue(key);
+    console.log(key);
+    const responseHeaders = [
+      'HTTP/1.1 101 Switching Protocols',
+      'Upgrade: websocket',
+      'Connection: Upgrade',
+      `Sec-WebSocket-Accept: ${acceptKey}`,
+      `Sec-WebSocket-Extensions: ${req.headers['sec-websocket-extensions']}`,
+    ];
+
+    socket.on('connect', () => {
+      console.log('Client connected');
+    });
+    socket
+      .on('close', (hadError) => {
+        if (hadError) console.log('Connection closed with error');
+        else console.log('Connection closed');
+      })
+      .on('error', (err) => {
+        console.log(`Connection error: ${err}`);
+      })
+      .on('data', (data) => {
+        console.log(data);
+      })
+      .on('drain', () => {
+        console.log('Connection drain event');
+      });
+    socket.write(responseHeaders.concat('\r\n').join('\r\n'));
+  });
 
   httpServer.listen(process.env.HOST_PORT, () => {
     console.log('HTTP Server is listening on port 8080');
