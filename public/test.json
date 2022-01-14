@@ -1,0 +1,11 @@
+{
+  "title": "Quiz testowy",
+  "description": "Opis quizu testowego",
+  "questions": [
+    {
+      "question": "Pytanie #1",
+      "answers": ["Odpowiedź #1", "Odpowiedź #2", "Odpowiedź #3", "Odpowiedź #4"],
+      "correctAnswer": 1
+    }
+  ]
+}

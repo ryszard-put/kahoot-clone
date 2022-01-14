@@ -2,16 +2,34 @@
   "name": "kahoot-clone",
   "version": "0.0.1",
   "description": "Kahoot app clone - quiz app",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "repository": "https://github.com/ryszard-put/kahoot-clone",
   "author": "ryszard-put <ryszard.poznanski0@gmail.com>",
   "license": "MIT",
   "private": false,
+  "type": "commonjs",
+  "scripts": {
+    "env:dev": "set NODE_ENV=development",
+    "env:prod": "set NODE_ENV=production",
+    "server:dev": "nodemon --watch src/* --watch public/* src/app.js",
+    "server:prod": "node src/app.js",
+    "dev": "npm-run-all env:dev server:dev",
+    "prod": "npm-run-all env:prod server:prod"
+  },
   "dependencies": {
+    "crypto": "^1.0.1",
+    "dotenv": "^11.0.0",
+    "express": "^4.17.2",
+    "redis": "^4.0.1",
     "websocket": "^1.0.34",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "nodemon": "^2.0.15",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
   }
 }
