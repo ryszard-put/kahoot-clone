@@ -8,12 +8,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './components/context/auth';
+import { SocketProvider } from './components/context/socket';
+
+localStorage.setItem('debug', '*');
 
 ReactDOM.render(
   <BrowserRouter>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <SocketProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </SocketProvider>
   </BrowserRouter>,
   document.getElementById('root')
 );

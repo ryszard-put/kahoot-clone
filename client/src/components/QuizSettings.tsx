@@ -11,7 +11,7 @@ const QuizSettings = ({data}) => {
         </hgroup>
         <ol>
           {
-            answers.map((answer, idx) => <li key={answer} style={idx == correctAnswer ? {textDecoration: 'underline'} : {}}>{answer}</li>)
+            answers.map((answer, idx) => <li key={answer} style={idx === correctAnswer ? {textDecoration: 'underline'} : {}}>{answer}</li>)
           }
         </ol>
       </article>)}

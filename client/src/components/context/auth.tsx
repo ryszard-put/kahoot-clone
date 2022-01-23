@@ -2,7 +2,7 @@ import {createContext, FC, useContext, useState} from 'react'
 
 export interface IAuthState {
   authenticated: boolean;
-  userId: string;
+  user: string;
 }
 
 export interface IAuthContextData {
@@ -15,7 +15,7 @@ export const authContext = createContext<IAuthContextData>(null);
 export const useAuth = () => useContext(authContext);
 
 export const AuthProvider: FC = ({children}) => {
-  const [user, setUser] = useState<IAuthState>({authenticated: false, userId: ""});
+  const [user, setUser] = useState<IAuthState>({authenticated: false, user: ""});
 
   return <authContext.Provider value={{user, setUser}}>
     {children}

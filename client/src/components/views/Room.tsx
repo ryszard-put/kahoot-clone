@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react";
+import { useSocket } from "../context/socket";
+import { isEqual, INVALID_ROOM_ID, ROOM_JOINED, ResponseBody } from "../../utils/response-constants";
+import { useParams } from "react-router-dom";
+
 // import { useParams } from "react-router-dom"
 
 
 const Room = () => {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
+  const [quizTitle, setQuizTitle] = useState("Tytuł quizu");
+  const [quizDescription, setQuizDescription] = useState("Krótki opis Lorem ipsum dolor sit amet consectetur adipisicing elit.");
   const [ready, setReady] = useState(false);
   const [playerCount, setPlayerCount] = useState(0);
-  // const params = useParams();
+  const {participantSocket} = useSocket();
+  const params = useParams();
   
   // TODO: connect to room with socket instance or notify that room does not exist
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    setLoading(true);
+    participantSocket.emit(
+      'join-room',
+      params.roomId,
+      (response: ResponseBody) => {
+        console.log(response)
+        if(isEqual(INVALID_ROOM_ID, response)){
+          setQuizTitle('INVALID ROOM ID');
+          setQuizDescription('INVALID ROOM ID');
+        }
+        if(isEqual(ROOM_JOINED, response)){
+          setQuizTitle(response.payload.title);
+          setQuizDescription(response.payload.description);
+        }
+        setLoading(false);
+      },
+    )
   }, [])
 
   const onUsernameSubmit: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -28,9 +49,9 @@ const Room = () => {
     <div className="grid">
       <article>
         <header>
-          Tytuł quizu
+          {quizTitle}
         </header>
-        Krótki opis Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        {quizDescription}
       </article>
       <div className="grid" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
         <div>

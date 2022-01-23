@@ -1,15 +1,29 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/auth';
+import { useSocket } from '../context/socket';
+import { isEqual, USER_SIGNED_OUT, ResponseBody } from '../../utils/response-constants'
 
 const PanelLayout = () => {
   const {user, setUser} = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const {mainSocket} = useSocket()
+
+  const handleSignOut = () => {
+    mainSocket.emit('signout', (response: ResponseBody) => {
+      if (isEqual(USER_SIGNED_OUT, response)) {
+        return setUser(s => ({...s, user: '', authenticated: false}))
+      }
+
+      // if(code === 400 && status === 'user-not-authenticated') return setUser()
+    })
+  }
+
   return (
     <>
       <nav>
         <ul>
-          <li>Zalogowano jako: {user.userId}</li>
+          <li>Zalogowano jako: {user.user}</li>
         </ul>
         <ul>
           {!location.pathname.includes("quiz/new")
@@ -20,7 +34,7 @@ const PanelLayout = () => {
             null
           }
           <li>
-            <button onClick={() => {setUser(s => ({...s, authenticated: false}));}} className="contrast">Wyloguj się</button>
+            <button onClick={(e) => {e.preventDefault(); handleSignOut();}} className="contrast">Wyloguj się</button>
           </li>
         </ul>
       </nav>

@@ -2,20 +2,8 @@ import { useState, ChangeEventHandler } from 'react'
 import Ajv from 'ajv';
 import QuizSettings from '../QuizSettings';
 import { useNavigate } from 'react-router-dom';
-
-// export interface IQuizQuestion {
-//   question: string;
-//   correctAnswer: number; // array index (from 0)
-//   answers: string[];
-//   timeToAnswer: number; // in seconds
-// }
-
-// export interface IQuizFile {
-//   title: string;
-//   description: string;
-//   questions: IQuizQuestion[];
-// }
-
+import { useSocket } from '../context/socket';
+import { isEqual, QUIZ_ADDED, ResponseBody } from '../../utils/response-constants';
 
 const schema = {
   type: "object",
@@ -49,7 +37,9 @@ const validate = ajv.compile(schema);
 
 const NewQuiz = () => {
   const [quizData, setQuizData] = useState({});
+  const [rawQuizData, setRawQuizData] = useState("");
   const navigate = useNavigate();
+  const {creatorSocket} = useSocket();
 
   const onFileChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     
@@ -60,15 +50,15 @@ const NewQuiz = () => {
     reader.onload = function (event) {
       try {
         console.log(event.target.result);
-        // const data: IQuizFile = JSON.parse(event.target.result as string) as IQuizFile;
         const data = JSON.parse(event.target.result as string)
         const valid = validate(data);
-        if(valid){
+        if (valid) {
           setQuizData(data);
+          setRawQuizData(event.target.result as string);
         } else {
           console.log(validate.errors)
         }
-      } catch(exc) {
+      } catch (exc) {
         console.log(exc)
         console.log("Niepoprawny format pliku")
       }
@@ -79,7 +69,13 @@ const NewQuiz = () => {
 
   const onQuizCreate: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    navigate(`/panel/quiz/123456`, {replace: true});
+    creatorSocket.emit('add-quiz', rawQuizData, (response: ResponseBody) => {
+      console.log(response);
+      if(isEqual(QUIZ_ADDED, response)) {
+        return navigate(`/panel`, {replace: true});
+      }
+      alert("Wystąpił błąd!");
+    })
   }
 
   return (
@@ -91,7 +87,7 @@ const NewQuiz = () => {
         Object.keys(quizData).length
           ? <>
               <QuizSettings data={quizData} />
-              <button onClick={onQuizCreate}>Uruchom quiz</button>
+              <button onClick={onQuizCreate}>Dodaj quiz</button>
             </>
           : null
       }
