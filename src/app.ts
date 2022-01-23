@@ -2,51 +2,40 @@ import {config} from 'dotenv'
 config();
 import express from 'express';
 import http from 'http';
-import { Server } from 'socket.io';
+import session from 'express-session';
+import { Server, Socket } from 'socket.io';
+import { registerBasicHandlers } from './handlers/basic';
+import { registerCreatorHandlers } from './handlers/creator';
+import { registerParticipantHandlers } from './handlers/participant';
+import { connectDB, loadDB } from './db';
+import { initRedis } from './redis';
 
-const app = express();
-const httpServer = http.createServer(app);
-const io = new Server(httpServer, {
-  transports: ['websocket'],
-  path: '/ws',
-  cors: {
-    origin: ['http://localhost:3000'],
-  },
-});
+const wrap = (middleware: any) => (socket: Socket, next: any) => middleware(socket.request, {}, next);
 
-io.on('connection', (socket) => {
-  socket.on('disconnect', (reason) => {
-    console.log(`Socket disconnected with reason: ${reason}`);
+(async () => {
+  await initRedis();
+
+  await connectDB();
+  await loadDB();
+
+  const app = express();
+  const httpServer = http.createServer(app);
+  
+  const io = new Server(httpServer, {
+    transports: ['websocket'],
+    path: '/ws',
+    cors: {
+      origin: 'http://localhost:3000',
+      credentials: true
+    },
   });
+  io.use(wrap(session({ secret: process.env.SESSION_SECRET })));
 
-  socket.on('test message', (...args) => {
-    console.log(args);
+  registerBasicHandlers(io);
+  registerCreatorHandlers(io);
+  registerParticipantHandlers(io);
+
+  httpServer.listen(process.env.HOST_PORT, () => {
+    console.log('Server started');
   });
-});
-
-// app.use('/', express.static(path.join(__dirname, '..', 'public')));
-
-// app.get('/', (_, res) => {
-//   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'), (err) => {
-//     if (err) {
-//       console.log(err);
-//       res.end(err.message);
-//     }
-//   });
-// });
-
-// app.get('/manage-room', (_, res) => {
-//   res.sendFile(
-//     path.join(__dirname, '..', 'public', 'manage-room.html'),
-//     (err) => {
-//       if (err) {
-//         console.log(err);
-//         res.end(err.message);
-//       }
-//     }
-//   );
-// });
-
-httpServer.listen(process.env.HOST_PORT, () => {
-  console.log('Server started');
-});
+})();
