@@ -1,5 +1,4 @@
 import { Server, Socket } from "socket.io";
-import {v4 as uuidv4} from 'uuid';
 import { UserModel } from "../../db/models";
 import {IncomingMessage} from 'http';
 import { SessionData } from "express-session";
@@ -30,7 +29,8 @@ export const registerBasicHandlers = (io: Server) => {
 
       if (!user || !user.validatePassword(data.password)) return callback(USER_NOT_FOUND);
 
-      socket.request.session.creator = user._id;
+      socket.request.session.creator = user._id.toString();
+
       return callback(USER_AUTHENTICATED);
     });
 
@@ -41,10 +41,10 @@ export const registerBasicHandlers = (io: Server) => {
       socket.request.session.creator = null;
 
       return callback(USER_SIGNED_OUT);
-    })
+    });
     
     socket.on('test-session', async () => {
       console.log(socket.request.session);
-    })
+    });
   })
 }

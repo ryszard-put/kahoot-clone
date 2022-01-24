@@ -29,7 +29,7 @@ const wrap = (middleware: any) => (socket: Socket, next: any) => middleware(sock
       credentials: true
     },
   });
-  io.use(wrap(session({ secret: process.env.SESSION_SECRET })));
+  io.use(wrap(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true })));
 
   registerBasicHandlers(io);
   registerCreatorHandlers(io);
