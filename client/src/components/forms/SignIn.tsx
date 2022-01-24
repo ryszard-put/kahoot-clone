@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { isEqual, ResponseBody, USER_AUTHENTICATED, USER_SIGNED_OUT } from "../../utils/response-constants";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import { isEqual, ResponseBody, USER_AUTHENTICATED, USER_NOT_FOUND } from "../../utils/response-constants";
 import { useAuth } from "../context/auth";
 import { useSocket } from "../context/socket";
 
@@ -8,15 +8,17 @@ import { useSocket } from "../context/socket";
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [invalidData, setInvalidData] = useState(false);
   const {user, setUser} = useAuth();
-  const navigate = useNavigate();
-  const {mainSocket, creatorSocket} = useSocket();
+  const {mainSocket} = useSocket();
 
   const onSubmit = /* async */ () => {
     if(!username || !password) return;
     mainSocket.emit("signin", {username, password}, (response: ResponseBody) => {
       if(isEqual(USER_AUTHENTICATED, response)) {
         setUser(s => ({...s, authenticated: true, user: username}))
+      } else if (isEqual(USER_NOT_FOUND, response)) {
+        setInvalidData(true);
       }
     });
   }
@@ -27,14 +29,24 @@ const SignIn = () => {
   return <form>
     <div className="grid">
       <div>
-        <input type="text" placeholder="Login" value={username} onChange={(e) => setUsername(e.target.value)} />
+        {
+          invalidData ?
+            <input type="text" placeholder="Login" aria-invalid="true" value={username} onChange={(e) => {setInvalidData(false); setUsername(e.target.value)}} />
+          :
+            <input type="text" placeholder="Login" value={username} onChange={(e) => setUsername(e.target.value)} />
+        }
       </div>
       <div>
-        <input type="text" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        {
+          invalidData ?
+            <input type="text" placeholder="Hasło" aria-invalid="true" value={password} onChange={(e) => {setInvalidData(false); setPassword(e.target.value)}} />
+          :
+            <input type="text" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} />
+        }
+        
       </div>
     </div>
     <button onClick={(e) => {e.preventDefault();onSubmit()}}>Zaloguj się</button>
-    <button onClick={(e) => {e.preventDefault();mainSocket.emit('test-session')}}>test session</button>
   </form>
 }
 

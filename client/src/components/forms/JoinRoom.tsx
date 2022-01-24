@@ -6,7 +6,10 @@ const JoinRoom = () => {
   const navigate = useNavigate();
 
   return <form>
-    <input type="text" value={roomId} onChange={(e) => setRoomId(e.target.value)} placeholder="Id pokoju" />
+    <div className="grid">
+      <input type="text" value={roomId} onChange={(e) => setRoomId(e.target.value)} placeholder="Id pokoju" />
+    </div>
+    
     <button onClick={e => {e.preventDefault();navigate(`/${roomId}`, {replace: true})}}>Dołącz do pokoju</button>
   </form>
 }

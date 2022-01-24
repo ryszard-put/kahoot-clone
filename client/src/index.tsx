@@ -1,25 +1,15 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
 
 import '@picocss/pico/css/pico.min.css'
 import './index.css';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { AuthProvider } from './components/context/auth';
-import { SocketProvider } from './components/context/socket';
 
 localStorage.setItem('debug', '*');
 
 ReactDOM.render(
-  <BrowserRouter>
-    <SocketProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </SocketProvider>
-  </BrowserRouter>,
+  <App />,
   document.getElementById('root')
 );
 

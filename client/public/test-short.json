@@ -6,19 +6,19 @@
       "question": "Pytanie #1",
       "answers": ["Odpowiedź #1", "Odpowiedź #2", "Odpowiedź #3", "Odpowiedź #4"],
       "correctAnswer": 1,
-      "timeToAnswer": 30
+      "timeToAnswer": 2
     },
     {
       "question": "Pytanie #2",
       "answers": ["Odpowiedź #1", "Odpowiedź #2", "Odpowiedź #3", "Odpowiedź #4"],
       "correctAnswer": 3,
-      "timeToAnswer": 30
+      "timeToAnswer": 2
     },
     {
       "question": "Pytanie #3",
       "answers": ["Odpowiedź #1", "Odpowiedź #2", "Odpowiedź #3", "Odpowiedź #4"],
       "correctAnswer": 1,
-      "timeToAnswer": 30
+      "timeToAnswer": 2
     }
   ]
 }

@@ -11,18 +11,13 @@ const Panel = () => {
     creatorSocket.emit(
       'get-quizes',
       (response: ResponseBody) => {
-        console.log(response)
         if(isEqual(QUIZES_FOUND, response)){
           setQuizes(response.payload);
         }
         setLoading(false);
-      },
-      // (err: any) => {
-      //   console.log(err)
-      //   setLoading(false);
-      // }
+      }
     )
-  },[]);
+  },[creatorSocket]);
 
   return (
     <div>

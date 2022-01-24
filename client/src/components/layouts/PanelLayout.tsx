@@ -18,6 +18,7 @@ const PanelLayout = () => {
       // if(code === 400 && status === 'user-not-authenticated') return setUser()
     })
   }
+  console.log(location.pathname)
 
   return (
     <>
@@ -26,7 +27,7 @@ const PanelLayout = () => {
           <li>Zalogowano jako: {user.user}</li>
         </ul>
         <ul>
-          {!location.pathname.includes("quiz/new")
+          {location.pathname === "/panel"
             ? <li>
                 <button onClick={() => navigate("quiz/new")}>Stwórz nowy quiz</button>
               </li>
