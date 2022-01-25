@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { ANSWER_SENT, isEqual, ResponseBody } from '../../utils/response-constants';
+import { showError } from '../../utils/notifications';
+import { ANSWER_SENT, INVALID_ANSWER, INVALID_ROOM_ID, isEqual, NO_USERNAME, QUIZ_NOT_RUNNING, ResponseBody } from '../../utils/response-constants';
 import { useSocket } from '../context/socket';
 
 export interface IQuizQuestionRunningProps {
@@ -21,6 +22,14 @@ const QuizQuestionRunning: FC<IQuizQuestionRunningProps> = ({question, answers, 
       participantSocket.emit('answer-question', roomId, idx, (response: ResponseBody) => {
         if(isEqual(ANSWER_SENT, response)) {
           setSelectedAnswer(idx);
+        } else if(isEqual(INVALID_ROOM_ID, response)) {
+          showError('Niepoprawny numer pokoju');
+        } else if(isEqual(NO_USERNAME, response)) {
+          showError('Nie podano nazwy użytkownika');
+        } else if(isEqual(QUIZ_NOT_RUNNING, response)) {
+          showError('Odpowiedzi można udzielić w trakcie trwania pytania');
+        } else if(isEqual(INVALID_ANSWER, response)) {
+          showError('Tak odpowiedź nie istnieje');
         }
       })
     }
@@ -28,7 +37,7 @@ const QuizQuestionRunning: FC<IQuizQuestionRunningProps> = ({question, answers, 
 
   return <div> 
     <article>
-      <p><strong>Pytanie #{questionNumber}:</strong> {question}</p>
+      <p><strong>Pytanie #{questionNumber + 1}:</strong> {question}</p>
       <p>Pozostały czas: {remainingTime}</p>
     </article>
     <article>
@@ -40,7 +49,6 @@ const QuizQuestionRunning: FC<IQuizQuestionRunningProps> = ({question, answers, 
         </article>
       : <article>Wybrano odpowiedź {String.fromCharCode(65+selectedAnswer)}</article>
     }
-    
   </div>
 };
 

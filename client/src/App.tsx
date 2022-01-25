@@ -7,12 +7,12 @@ import { SocketProvider } from './components/context/socket';
 const App = () => {
   return (
     <BrowserRouter>
-    <SocketProvider>
-      <AuthProvider>
-        <RouteConfig />
-      </AuthProvider>
-    </SocketProvider>
-  </BrowserRouter>
+      <SocketProvider>
+        <AuthProvider>
+          <RouteConfig />
+        </AuthProvider>
+      </SocketProvider>
+    </BrowserRouter>
   );
 }
 

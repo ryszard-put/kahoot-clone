@@ -1,7 +1,9 @@
 import ReactDOM from 'react-dom';
+import {NotificationContainer} from 'react-notifications'
 
 import '@picocss/pico/css/pico.min.css'
 import './index.css';
+import 'react-notifications/lib/notifications.css';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -9,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 localStorage.setItem('debug', '*');
 
 ReactDOM.render(
-  <App />,
+  <><App /><NotificationContainer /></>,
   document.getElementById('root')
 );
 

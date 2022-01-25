@@ -9,6 +9,7 @@ import QuizQuestionSummary from "../player-quiz-views/QuizQuestionSummary";
 import QuizQuestionRunning from "../player-quiz-views/QuizQuestionRunning";
 import useInterval from "../../utils/hooks/useInterval";
 import QuizSummary from "../player-quiz-views/QuizSummary";
+import { showError, showInfo, showSuccess } from "../../utils/notifications";
 
 // import { useParams } from "react-router-dom"
 
@@ -45,16 +46,20 @@ const Room = () => {
         setQuizQuestionCount(response.payload.questionCount);
         setLoading(false)
       } else if (isEqual(INVALID_ROOM_ID, response)) {
+        showInfo('Pokój o podanym numerze nie istnieje')
         navigate('/', {replace: true, state: response.status})
       } else if(isEqual(QUIZ_ALREADY_STARTED, response)) {
-        console.log(response.status);
+        showInfo('Nie można dołączyć do aktywnego quizu')
         navigate('/', {replace: true, state: response.status})
       }
     })
 
     participantSocket
       .on('update-player-count', (payload: number) => setConnectedPlayers(payload))
-      .on('room-closed', () => navigate('/', {replace: true, state: 'room-closed'}))
+      .on('room-closed', () => {
+        showInfo('Pokój został wyłączony');
+        navigate('/', {replace: true, state: 'room-closed'})
+      })
       .on('quiz-started', () => {
         setQuizState("PAUSED");
         setNextQuestion(0);
@@ -74,6 +79,7 @@ const Room = () => {
         setNextQuestion(s => ++s);
       })
       .on('quiz-closed', (payload: {summary: {[key: string]: number}, username: string}) => {
+        showInfo('Quiz się zakończył');
         setQuizState("CLOSED");
         setSummary(payload.summary);
         setSummaryUsername(payload.username);
@@ -98,14 +104,17 @@ const Room = () => {
         (response: ResponseBody) => {
           console.log(response);
           if (isEqual(INVALID_ROOM_ID, response)) {
+            showError('Pokój o podanym numerze nie istnieje')
             navigate('/', {replace: true, state: response.status})
           } else if(isEqual(QUIZ_ALREADY_STARTED, response)) {
+            showInfo('Nie można dołączyć do aktywnego quizu')
             navigate('/', {replace: true, state: response.status})
           } else if (isEqual(USERNAME_TAKEN, response)) {
-            // TODO: notify user that username is taken
+            showError('Podana nazwa jest już zajęta')
             alert(response.status)
           }
           else if (isEqual(ROOM_JOINED, response)) {
+            showSuccess('Dołączono do pokoju')
             setReady(true);
             setConnectedPlayers(response.payload);
           }

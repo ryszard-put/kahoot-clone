@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+import { showError, showInfo } from "../../utils/notifications";
+
 import { isEqual, ResponseBody, USER_AUTHENTICATED, USER_NOT_FOUND } from "../../utils/response-constants";
 import { useAuth } from "../context/auth";
 import { useSocket } from "../context/socket";
@@ -17,7 +19,9 @@ const SignIn = () => {
     mainSocket.emit("signin", {username, password}, (response: ResponseBody) => {
       if(isEqual(USER_AUTHENTICATED, response)) {
         setUser(s => ({...s, authenticated: true, user: username}))
+        showInfo('Zalogowano pomyślnie');
       } else if (isEqual(USER_NOT_FOUND, response)) {
+        showError('Podano nieprawidłową nazwę lub hasło')
         setInvalidData(true);
       }
     });
@@ -39,9 +43,9 @@ const SignIn = () => {
       <div>
         {
           invalidData ?
-            <input type="text" placeholder="Hasło" aria-invalid="true" value={password} onChange={(e) => {setInvalidData(false); setPassword(e.target.value)}} />
+            <input type="password" placeholder="Hasło" aria-invalid="true" value={password} onChange={(e) => {setInvalidData(false); setPassword(e.target.value)}} />
           :
-            <input type="text" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input type="password" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} />
         }
         
       </div>

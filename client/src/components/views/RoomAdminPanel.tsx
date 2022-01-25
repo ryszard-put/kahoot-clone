@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useInterval from "../../utils/hooks/useInterval";
+import { showError, showSuccess } from "../../utils/notifications";
 import { INSUFFICIENT_PERMISSIONS, isEqual, NO_MORE_QUESTIONS, QUESTION_DATA_SENT, QUIZ_CLOSED, QUIZ_STARTED, ResponseBody, ROOM_NOT_OPEN, ROOM_NOT_PAUSED, USER_NOT_AUTHENTICATED } from "../../utils/response-constants";
 import QuizOpenView from "../admin-quiz-views/QuizOpenView";
 import QuizQuestionsPreview from "../admin-quiz-views/QuizQuestionsPreview";
@@ -36,13 +37,15 @@ const RoomAdminPanel = () => {
         setRemainingTime(+response.payload);
         setQuizState("RUNNING");
       } else if (isEqual(USER_NOT_AUTHENTICATED, response)) {
+        showError('Użytkownik nie jest uwierzytelniony')
         navigate('/', {replace: true, state: response.status});
       } else if (isEqual(INSUFFICIENT_PERMISSIONS, response)) {
-        // TODO: it is almost impossible, but react to this
+        showError('Brak uprawnieńdo wykonania akcji')
+        navigate('/', {replace: true, state: response.status});
       } else if (isEqual(ROOM_NOT_PAUSED, response)) {
-        // TODO: it is almost impossible, but react to this
+        showError('Nie można uruchomić pytania w trakcie działania innego pytania')
       } else if (isEqual(NO_MORE_QUESTIONS, response)) {
-        // TODO: it is almost impossible, but react to this
+        showError('Nie ma więcej pytań do uruchomienia')
       }
     });
   }
@@ -55,11 +58,13 @@ const RoomAdminPanel = () => {
         setQuizState("PAUSED");
         setNextQuestion(0);
       } else if (isEqual(USER_NOT_AUTHENTICATED, response)) {
+        showError('Użytkownik nie jest uwierzytelniony')
         navigate('/', {replace: true, state: response.status});
       } else if (isEqual(INSUFFICIENT_PERMISSIONS, response)) {
-        // TODO: it is almost impossible, but react to this
+        showError('Brak uprawnieńdo wykonania akcji')
+        navigate('/', {replace: true, state: response.status});
       } else if (isEqual(ROOM_NOT_OPEN, response)) {
-        // TODO: it is almost impossible, but react to this
+        showError('Nie można uruchomić quizu, który jest już uruchomiony')
       }
     })
   }
@@ -68,6 +73,7 @@ const RoomAdminPanel = () => {
     e.preventDefault();
     creatorSocket.emit('close-quiz', roomId, (response: ResponseBody) => {
       if(isEqual(QUIZ_CLOSED, response)) {
+        showSuccess('Quiz zamknięto pomyślnie')
         setQuizState("CLOSED");
         setSummary(response.payload);
       }

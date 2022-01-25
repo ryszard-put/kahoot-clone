@@ -128,10 +128,8 @@ export const registerCreatorHandlers = async (io: Server<DefaultEventsMap, Defau
       // if the socket gets disconnected while the room is still active
       socket.on('disconnecting', async () => {
         // remove the data about the quiz from the temporary database
-        console.log(roomId);
         const x = await redisClient.del(`${roomId}:*`);
         // const y = await redisClient.del(`${roomId}:STATE`);
-        console.log(x);
         // publish an information intended for participants that the room has closed
         localPublisher.publish(roomId, 'room-closed');
       });

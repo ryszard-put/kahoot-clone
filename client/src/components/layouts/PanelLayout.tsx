@@ -2,6 +2,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/auth';
 import { useSocket } from '../context/socket';
 import { isEqual, USER_SIGNED_OUT, ResponseBody } from '../../utils/response-constants'
+import { showSuccess } from '../../utils/notifications';
 
 const PanelLayout = () => {
   const {user, setUser} = useAuth();
@@ -12,6 +13,7 @@ const PanelLayout = () => {
   const handleSignOut = () => {
     mainSocket.emit('signout', (response: ResponseBody) => {
       if (isEqual(USER_SIGNED_OUT, response)) {
+        showSuccess('Wylogowano pomyślnie')
         return setUser(s => ({...s, user: '', authenticated: false}))
       }
 
@@ -34,9 +36,13 @@ const PanelLayout = () => {
             :
             null
           }
-          <li>
-            <button onClick={(e) => {e.preventDefault(); handleSignOut();}} className="contrast">Wyloguj się</button>
-          </li>
+          {
+            !location.pathname.match(/^\/panel\/quiz\/[0-9]{6}$/)
+            ? <li>
+                <button onClick={(e) => {e.preventDefault(); handleSignOut();}} className="contrast">Wyloguj się</button>
+              </li>
+            : null
+          }
         </ul>
       </nav>
       <div className="container">

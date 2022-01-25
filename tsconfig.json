@@ -10,7 +10,6 @@
       "es6",
     ],
     "sourceMap": true,
-    "allowJs": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
     "rootDir": "src",
@@ -18,5 +17,5 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
   },
-  "exclude": ["client"]
+  "exclude": ["client", "dist"]
 }

@@ -2,6 +2,7 @@ import {config} from 'dotenv'
 config();
 import express from 'express';
 import http from 'http';
+import path from 'path';
 import session from 'express-session';
 import { Server, Socket } from 'socket.io';
 import { registerBasicHandlers } from './handlers/basic';
@@ -19,15 +20,14 @@ const wrap = (middleware: any) => (socket: Socket, next: any) => middleware(sock
   await loadDB();
 
   const app = express();
+
+  app.use('/', express.static(path.join(__dirname, '..', 'client', 'build')));
+
   const httpServer = http.createServer(app);
   
   const io = new Server(httpServer, {
     transports: ['websocket'],
-    path: '/ws',
-    cors: {
-      origin: 'http://localhost:3000',
-      credentials: true
-    },
+    path: '/ws'
   });
   io.use(wrap(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true })));
 

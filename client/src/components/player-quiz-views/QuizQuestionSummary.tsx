@@ -15,7 +15,7 @@ export interface IQuizQuestionSummaryProps {
 const QuizQuestionSummary: FC<IQuizQuestionSummaryProps> = ({questionNumber, answersCount, beforeFirstQuestion,question, selectedAnswer}) => {
   return <div>
     <div>
-      <h1>Oczekiwanie na pytanie #{questionNumber + 1}</h1>
+      <h1>Oczekiwanie na akcję właściciela pokoju</h1>
     </div>
     {!beforeFirstQuestion
       ? <div>

@@ -3,7 +3,8 @@ import Ajv from 'ajv';
 import QuizSettings from '../QuizSettings';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/socket';
-import { isEqual, QUIZ_ADDED, ResponseBody } from '../../utils/response-constants';
+import { isEqual, QUIZ_ADDED, ResponseBody, USER_NOT_AUTHENTICATED } from '../../utils/response-constants';
+import { showError, showSuccess } from '../../utils/notifications';
 
 const schema = {
   type: "object",
@@ -55,12 +56,15 @@ const NewQuiz = () => {
         if (valid) {
           setQuizData(data);
           setRawQuizData(event.target.result as string);
+          showSuccess('Quiz spełnia wymagania')
         } else {
+          showError('Quiz nie spełnia wymagań')
           console.log(validate.errors)
         }
       } catch (exc) {
         console.log(exc)
         console.log("Niepoprawny format pliku")
+        showError('Wystąpił błąd w trakcie przetwarzania pliku')
       }
     };
 
@@ -72,9 +76,11 @@ const NewQuiz = () => {
     creatorSocket.emit('add-quiz', rawQuizData, (response: ResponseBody) => {
       console.log(response);
       if(isEqual(QUIZ_ADDED, response)) {
-        return navigate(`/panel`, {replace: true});
+        showSuccess('Pomyślnie dodano quiz')
+        navigate(`/panel`, {replace: true});
+      } else if (isEqual(USER_NOT_AUTHENTICATED, response)) {
+        navigate('/', {replace: true, state: response.status})
       }
-      alert("Wystąpił błąd!");
     })
   }
 

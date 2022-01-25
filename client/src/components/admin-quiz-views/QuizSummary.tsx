@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { showError, showWarning } from "../../utils/notifications";
 import { INSUFFICIENT_PERMISSIONS, isEqual, ResponseBody, ROOM_CLOSED, ROOM_NOT_CLOSED, USER_NOT_AUTHENTICATED } from "../../utils/response-constants";
 import { useSocket } from "../context/socket";
 
@@ -28,14 +29,14 @@ const QuizSummary: FC<IQuizSummaryProps> = ({summary}) => {
       if (isEqual(ROOM_CLOSED, response)) {
         navigate('/panel', {replace: true, state: response.status});
       } else if (isEqual(ROOM_NOT_CLOSED, response)){
-        // TODO: impossible
-        console.error(response.status)
+        // impossible
+        showError(`Wystąpił poważny błąd - ${response.status}`);
         navigate('/panel', {replace: true, state: response.status});
       } else if (isEqual(INSUFFICIENT_PERMISSIONS, response)) {
-        console.error(response.status);
+        showWarning('Brak uprawnień do wykonania akcji');
         navigate('/panel', {replace: true, state: response.status});
       } else if (isEqual(USER_NOT_AUTHENTICATED, response)) {
-        console.error(response.status);
+        showWarning("Użytkownik nie jest uwierzytelniony");
         navigate('/', {replace: true, state: response.status});
       }
     })
