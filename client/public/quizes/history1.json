@@ -1,0 +1,30 @@
+{
+  "title": "Historia polski",
+  "description": "Czy pamietasz informację na temat władców Polski?",
+  "questions": [
+    {
+      "question": "Któremu z polskich władców odcięto głowę",
+      "answers": ["Kazimierzowi Odnowicielowi", "Ludwikowi Węgierskiemu", "Michałowi Korybutowi Wiśniowieckiemu", "Władysławowi Warneńczykowi"],
+      "correctAnswer": 3,
+      "timeToAnswer": 30
+    },
+    {
+      "question": "Który z polskich władców został wykastrowany",
+      "answers": ["Zbigniew", "Mieszko II", "Bezprym", "Aleksander Jagiellończyk"],
+      "correctAnswer": 1,
+      "timeToAnswer": 30
+    },
+    {
+      "question": "Który z polskich władców przeniósł stolicę do Warszawy?",
+      "answers": ["Stanisław August Poniatowski", "Zygmunt III Waza", "Kazimierz Odnowiciel", "Władysław Herman"],
+      "correctAnswer": 1,
+      "timeToAnswer": 30
+    },
+    {
+      "question": "Kto zastał Polskę drewnianą a zostawił murowaną?",
+      "answers": ["Zygmunt III Waza", "Kazimierz Wielki", "Bolesław Chrobry", "Kazimierz Odnowiciel"],
+      "correctAnswer": 2,
+      "timeToAnswer": 30
+    }
+  ]
+}

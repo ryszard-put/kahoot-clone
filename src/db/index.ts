@@ -6,21 +6,45 @@ export const connectDB = async () => {
 }
 
 export const loadDB = async () => {
-  // await UserModel.deleteMany({});
+  await UserModel.deleteMany({});
 
 
-  // const admin = new UserModel({
-  //   username: 'admin',
-  //   password: 'admin'
-  // });
+  const admin = new UserModel({
+    username: 'admin',
+    password: 'admin'
+  });
 
-  // await admin.save();
+  await admin.save();
 
 
-  // const normal = new UserModel({
-  //   username: 'normal',
-  //   password: 'normal'
-  // })
+  const math = new UserModel({
+    username: 'matematyka',
+    password: 'matematyka'
+  });
 
-  // await normal.save();
+  await math.save();
+
+
+  const history = new UserModel({
+    username: 'historia',
+    password: 'historia'
+  });
+
+  await history.save();
+
+
+  const normal1 = new UserModel({
+    username: 'normal1',
+    password: 'normal1'
+  });
+
+  await normal1.save();
+
+
+  const normal2 = new UserModel({
+    username: 'normal2',
+    password: 'normal2'
+  });
+
+  await normal2.save();
 }

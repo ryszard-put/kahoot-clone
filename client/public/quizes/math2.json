@@ -1,0 +1,24 @@
+{
+  "title": "Łatwy quiz z dzielenia",
+  "description": "Przećwicz zadania ze szkoły podstawowej",
+  "questions": [
+    {
+      "question": "16 : 8 =",
+      "answers": ["2", "7", "8", "10"],
+      "correctAnswer": 0,
+      "timeToAnswer": 15
+    },
+    {
+      "question": "2 : 1 =",
+      "answers": ["1", "2", "4", "5"],
+      "correctAnswer": 1,
+      "timeToAnswer": 15
+    },
+    {
+      "question": "28 : 7 =",
+      "answers": ["2", "3", "4", "5"],
+      "correctAnswer": 2,
+      "timeToAnswer": 15
+    }
+  ]
+}
