@@ -1,11 +1,12 @@
 import { connect } from 'mongoose';
-import { UserModel } from './models'
+import { UserModel, QuizModel } from './models'
 
 export const connectDB = async () => {
   await connect(`mongodb://${process.env.DB_HOST}:27017/${process.env.DB_NAME}`);
 }
 
 export const loadDB = async () => {
+  await QuizModel.deleteMany({});
   await UserModel.deleteMany({});
 
 
